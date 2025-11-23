@@ -4,37 +4,8 @@ import {
   FileText, CheckCircle, XCircle, Clock, ChevronLeft, 
   Share2, X, Edit3, BarChart2, Trash2, Clipboard, 
   Database, Cloud, Loader, RefreshCw, UserCheck, PieChart,
-  CloudDownload // Quitamos 'Target' que no se usaba
+  CloudDownload
 } from 'lucide-react';
-
-// --- FIREBASE IMPORTS ---
-import { initializeApp } from "firebase/app";
-import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "firebase/auth";
-import { getFirestore, doc, setDoc, getDoc, collection, getDocs } from "firebase/firestore";
-
-// --- CONFIGURACIÓN Y DATOS ESTÁTICOS ---
-const CONFIG = {
-  escuela: "Secundaria General 111",
-  municipio: "Tlajomulco de Zúñiga, Jalisco",
-  turnos: ["Matutino", "Vespertino"],
-  periodos: ["1", "2", "3"],
-  grados: ["1°", "2°", "3°"],
-  grupos: ["A", "B", "C", "D", "E"],
-  asignaturas: {
-    "1°": ["Español", "Inglés", "Artes", "Matemáticas", "Biología", "Tecnologías", "Geografía", "Educación Física", "Tutoría", "Integración"],
-    "2°": ["Español", "Inglés", "Artes", "Matemáticas", "Física", "Tecnologías", "Historia", "FCE", "Educación Física", "Tutoría", "Integración"],
-    "3°": ["Español", "Inglés", "Artes", "Matemáticas", "Química", "Tecnologías", "Historia", "FCE", "Educación Física", "Tutoría", "Integración"]
-  }
-};
-
-const DEFAULT_STUDENT_STATE = {
-  asistencia: "Asistencia",
-  entrega: 100,
-  metas: "En proceso", 
-  conducta: "Excelente",
-  calificacion: 10,
-  observaciones: ""
-};
 
 // --- FIREBASE IMPORTS ---
 import { initializeApp } from "firebase/app";
@@ -66,12 +37,7 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
 
-const analytics = getAnalytics(app);
-const auth = getAuth(app);
-const db = getFirestore(app);
 // Ajuste de seguridad: Usar un ID fijo si no hay variable de entorno
 const appId = typeof __app_id !== 'undefined' ? __app_id : 'secundaria-111-app';
 
