@@ -39,7 +39,8 @@ const db = getFirestore(app);
 
 
 // Ajuste de seguridad: Usar un ID fijo si no hay variable de entorno
-const appId = typeof __app_id !== 'undefined' ? __app_id : 'secundaria-111-app';
+const appId = "secundaria-111-app";
+
 
 // --- COMPONENTES UI ---
 const Button = ({ children, onClick, variant = "primary", className = "", icon: Icon, disabled, title }) => {
