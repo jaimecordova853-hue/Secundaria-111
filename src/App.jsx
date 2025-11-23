@@ -49,7 +49,9 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+const { initializeApp } = require("firebase-admin/app");
+
+initializeApp();
 const analytics = getAnalytics(app);
 const auth = getAuth(app);
 const db = getFirestore(app);
