@@ -36,15 +36,6 @@ const DEFAULT_STUDENT_STATE = {
   observaciones: ""
 };
 
-// --- INICIALIZACIÓN FIREBASE ---
-// IMPORTANTE: Reemplaza el objeto de abajo con tus credenciales reales de Firebase
-// Si dejaste el código anterior aquí, asegúrate de volver a pegarlo.
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
