@@ -3,8 +3,8 @@ import {
   Users, Calendar, Save, Upload, Download, Mail, 
   FileText, CheckCircle, XCircle, Clock, ChevronLeft, 
   Share2, X, Edit3, BarChart2, Trash2, Clipboard, 
-  Database, Cloud, Loader, RefreshCw, UserCheck, PieChart
-  
+  Database, Cloud, Loader, RefreshCw, UserCheck, PieChart,
+  Download as DownloadIcon // opcional si quieres distinguirlo
 } from 'lucide-react';
 
 // --- FIREBASE IMPORTS ---
@@ -13,6 +13,30 @@ import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged }
 import { getFirestore, doc, setDoc, getDoc, collection, getDocs } from "firebase/firestore";
 import { getAnalytics } from "firebase/analytics";
 
+// --- CONFIGURACIÓN Y DATOS ESTÁTICOS ---
+const CONFIG = {
+  escuela: "Secundaria General 111",
+  municipio: "Tlajomulco de Zúñiga, Jalisco",
+  turnos: ["Matutino", "Vespertino"],
+  periodos: ["1", "2", "3"],
+  grados: ["1°", "2°", "3°"],
+  grupos: ["A", "B", "C", "D", "E"],
+  asignaturas: {
+    "1°": ["Español", "Inglés", "Artes", "Matemáticas", "Biología", "Tecnologías", "Geografía", "Educación Física", "Tutoría", "Integración"],
+    "2°": ["Español", "Inglés", "Artes", "Matemáticas", "Física", "Tecnologías", "Historia", "FCE", "Educación Física", "Tutoría", "Integración"],
+    "3°": ["Español", "Inglés", "Artes", "Matemáticas", "Química", "Tecnologías", "Historia", "FCE", "Educación Física", "Tutoría", "Integración"]
+  }
+};
+
+const DEFAULT_STUDENT_STATE = {
+  asistencia: "Asistencia",
+  entrega: 100,
+  metas: "En proceso", 
+  conducta: "Excelente",
+  calificacion: 10,
+  observaciones: ""
+};
+
 // --- CONFIG FIREBASE ---
 const firebaseConfig = {
   apiKey: "AIzaSyCM-ZexCV5l4Hnu5IDFhYL4MMBT3qBxekQ",
@@ -20,14 +44,14 @@ const firebaseConfig = {
   projectId: "secundaria111-app",
   storageBucket: "secundaria111-app.firebasestorage.app",
   messagingSenderId: "273596277086",
-  appId: "1:273596277086:web:55da70fdbc9b15c8606fcf",
-  measurementId: "G-59876DECFJ"
+  appId: "1:273596277086:web:cc9ca625ee212d33606fcf",
+  measurementId: "G-7T2PFNKJBT"
 };
 
 // Initialize Firebase (solo una vez)
 const app = initializeApp(firebaseConfig);
 
-// Analytics solo en navegador (evita error en Vercel)
+// Analytics solo en navegador (evita problemas en build)
 let analytics;
 if (typeof window !== "undefined") {
   analytics = getAnalytics(app);
@@ -36,11 +60,12 @@ if (typeof window !== "undefined") {
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-
-
-// Ajuste de seguridad: Usar un ID fijo si no hay variable de entorno
+// ID fijo para Vercel
 const appId = "secundaria-111-app";
 
+const db = getFirestore(app);
+// Ajuste de seguridad: Usar un ID fijo si no hay variable de entorno
+const appId = typeof __app_id !== 'undefined' ? __app_id : 'secundaria-111-app';
 
 // --- COMPONENTES UI ---
 const Button = ({ children, onClick, variant = "primary", className = "", icon: Icon, disabled, title }) => {
@@ -123,33 +148,19 @@ export default function App() {
   const [notification, setNotification] = useState(null);
   const [isSyncing, setIsSyncing] = useState(false);
 
-  // --- AUTENTICACIÓN (VERSIÓN SEGURA PARA VERCEL) ---
-useEffect(() => {
-  let unsubscribe;
-
-  const initAuth = async () => {
-    try {
-      // En producción (Vercel) usa anónimo siempre
-      await signInAnonymously(auth);
-
-      // Escucha el estado de auth
-      unsubscribe = onAuthStateChanged(auth, (u) => {
-        setUser(u);
-      });
-    } catch (e) {
-      console.error("Firebase Auth error:", e);
-      // Muestra algo visible si falla
-      setNotification({ msg: "Error de autenticación Firebase. Revisa consola/Auth.", type: "danger" });
-    }
-  };
-
-  initAuth();
-
-  return () => {
-    if (unsubscribe) unsubscribe();
-  };
-}, []);
-
+  // --- AUTENTICACIÓN ---
+  useEffect(() => {
+    const initAuth = async () => {
+      if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+        await signInWithCustomToken(auth, __initial_auth_token);
+      } else {
+        await signInAnonymously(auth);
+      }
+    };
+    initAuth();
+    const unsubscribe = onAuthStateChanged(auth, setUser);
+    return () => unsubscribe();
+  }, []);
 
   // --- IDS DE DOCUMENTOS ---
   const getRosterId = () => `roster_${currentClass.turno}_${currentClass.grado}_${currentClass.grupo}`;
@@ -202,6 +213,7 @@ useEffect(() => {
   const loadDailyData = async () => {
     setIsSyncing(true);
     const dailyId = getDailyId();
+    const rosterId = getRosterId();
 
     try {
       const dailyRef = doc(db, 'artifacts', appId, 'users', user.uid, 'school_data', dailyId);
@@ -641,7 +653,7 @@ useEffect(() => {
                  <label className="cursor-pointer bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-md text-sm font-medium flex items-center gap-1 border border-gray-300"><Upload size={16} /> <span className="hidden sm:inline">CSV</span><input type="file" accept=".csv" className="hidden" onChange={handleFileUpload} /></label>
                  
                  {/* BOTON DE RECUPERACIÓN DE LISTA */}
-                 <button onClick={forceLoadRoster} className="bg-blue-50 hover:bg-blue-100 text-blue-700 px-3 py-2 rounded-md text-sm font-medium border border-blue-200" title="Recuperar lista guardada"><Download size={16} /></button>
+                 <button onClick={forceLoadRoster} className="bg-blue-50 hover:bg-blue-100 text-blue-700 px-3 py-2 rounded-md text-sm font-medium border border-blue-200" title="Recuperar lista guardada"><CloudDownload size={16} /></button>
                  
                  <button onClick={resetDailyData} className="bg-red-50 hover:bg-red-100 text-red-700 px-3 py-2 rounded-md text-sm font-medium border border-red-200"><Trash2 size={16} /></button>
                  <div className="h-6 w-px bg-gray-300 mx-1 hidden sm:block"></div>
