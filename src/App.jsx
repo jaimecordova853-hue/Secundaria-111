@@ -36,14 +36,13 @@ const DEFAULT_STUDENT_STATE = {
   observaciones: ""
 };
 
-// Import the functions you need from the SDKs you need
+// --- FIREBASE IMPORTS ---
 import { initializeApp } from "firebase/app";
+import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "firebase/auth";
+import { getFirestore, doc, setDoc, getDoc, collection, getDocs } from "firebase/firestore";
 import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// --- CONFIG FIREBASE ---
 const firebaseConfig = {
   apiKey: "AIzaSyCM-ZexCV5l4Hnu5IDFhYL4MMBT3qBxekQ",
   authDomain: "secundaria111-app.firebaseapp.com",
@@ -54,13 +53,22 @@ const firebaseConfig = {
   measurementId: "G-59876DECFJ"
 };
 
+// Initialize Firebase (solo una vez)
+const app = initializeApp(firebaseConfig);
+
+// Analytics solo en navegador (evita error en Vercel)
+let analytics;
+if (typeof window !== "undefined") {
+  analytics = getAnalytics(app);
+}
+
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Initialize Firebase
-const { initializeApp } = require("firebase-admin/app");
-
-initializeApp();
 const analytics = getAnalytics(app);
 const auth = getAuth(app);
 const db = getFirestore(app);
