@@ -123,19 +123,33 @@ export default function App() {
   const [notification, setNotification] = useState(null);
   const [isSyncing, setIsSyncing] = useState(false);
 
-  // --- AUTENTICACIÓN ---
-  useEffect(() => {
-    const initAuth = async () => {
-      if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-        await signInWithCustomToken(auth, __initial_auth_token);
-      } else {
-        await signInAnonymously(auth);
-      }
-    };
-    initAuth();
-    const unsubscribe = onAuthStateChanged(auth, setUser);
-    return () => unsubscribe();
-  }, []);
+  // --- AUTENTICACIÓN (VERSIÓN SEGURA PARA VERCEL) ---
+useEffect(() => {
+  let unsubscribe;
+
+  const initAuth = async () => {
+    try {
+      // En producción (Vercel) usa anónimo siempre
+      await signInAnonymously(auth);
+
+      // Escucha el estado de auth
+      unsubscribe = onAuthStateChanged(auth, (u) => {
+        setUser(u);
+      });
+    } catch (e) {
+      console.error("Firebase Auth error:", e);
+      // Muestra algo visible si falla
+      setNotification({ msg: "Error de autenticación Firebase. Revisa consola/Auth.", type: "danger" });
+    }
+  };
+
+  initAuth();
+
+  return () => {
+    if (unsubscribe) unsubscribe();
+  };
+}, []);
+
 
   // --- IDS DE DOCUMENTOS ---
   const getRosterId = () => `roster_${currentClass.turno}_${currentClass.grado}_${currentClass.grupo}`;
