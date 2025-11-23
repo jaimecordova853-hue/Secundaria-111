@@ -4,7 +4,7 @@ import {
   FileText, CheckCircle, XCircle, Clock, ChevronLeft, 
   Share2, X, Edit3, BarChart2, Trash2, Clipboard, 
   Database, Cloud, Loader, RefreshCw, UserCheck, PieChart,
-  Target, CloudDownload // Icono para recuperar lista
+  CloudDownload // Quitamos 'Target' que no se usaba
 } from 'lucide-react';
 
 // --- FIREBASE IMPORTS ---
@@ -37,6 +37,8 @@ const DEFAULT_STUDENT_STATE = {
 };
 
 // --- INICIALIZACIÓN FIREBASE ---
+// IMPORTANTE: Reemplaza el objeto de abajo con tus credenciales reales de Firebase
+// Si dejaste el código anterior aquí, asegúrate de volver a pegarlo.
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
@@ -58,10 +60,12 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
+
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+// Ajuste de seguridad: Usar un ID fijo si no hay variable de entorno
+const appId = typeof __app_id !== 'undefined' ? __app_id : 'secundaria-111-app';
 
 // --- COMPONENTES UI ---
 const Button = ({ children, onClick, variant = "primary", className = "", icon: Icon, disabled, title }) => {
