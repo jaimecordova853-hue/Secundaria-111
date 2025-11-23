@@ -4,7 +4,7 @@ import {
   FileText, CheckCircle, XCircle, Clock, ChevronLeft, 
   Share2, X, Edit3, BarChart2, Trash2, Clipboard, 
   Database, Cloud, Loader, RefreshCw, UserCheck, PieChart,
-  CloudDownload
+  Download
 } from 'lucide-react';
 
 // --- FIREBASE IMPORTS ---
@@ -626,7 +626,7 @@ export default function App() {
                  <label className="cursor-pointer bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-md text-sm font-medium flex items-center gap-1 border border-gray-300"><Upload size={16} /> <span className="hidden sm:inline">CSV</span><input type="file" accept=".csv" className="hidden" onChange={handleFileUpload} /></label>
                  
                  {/* BOTON DE RECUPERACIÓN DE LISTA */}
-                 <button onClick={forceLoadRoster} className="bg-blue-50 hover:bg-blue-100 text-blue-700 px-3 py-2 rounded-md text-sm font-medium border border-blue-200" title="Recuperar lista guardada"><CloudDownload size={16} /></button>
+                 <button onClick={forceLoadRoster} className="bg-blue-50 hover:bg-blue-100 text-blue-700 px-3 py-2 rounded-md text-sm font-medium border border-blue-200" title="Recuperar lista guardada"><Download size={16} /></button>
                  
                  <button onClick={resetDailyData} className="bg-red-50 hover:bg-red-100 text-red-700 px-3 py-2 rounded-md text-sm font-medium border border-red-200"><Trash2 size={16} /></button>
                  <div className="h-6 w-px bg-gray-300 mx-1 hidden sm:block"></div>
