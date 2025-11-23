@@ -3,8 +3,8 @@ import {
   Users, Calendar, Save, Upload, Download, Mail, 
   FileText, CheckCircle, XCircle, Clock, ChevronLeft, 
   Share2, X, Edit3, BarChart2, Trash2, Clipboard, 
-  Database, Cloud, Loader, RefreshCw, UserCheck, PieChart,
-  Download
+  Database, Cloud, Loader, RefreshCw, UserCheck, PieChart
+  
 } from 'lucide-react';
 
 // --- FIREBASE IMPORTS ---
